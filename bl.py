@@ -1,7 +1,7 @@
 import elasticsearch as es
 from elasticsearch.client import IndicesClient
 from elasticsearch.helpers import bulk
-from elasticsearch_dsl import Search
+from elasticsearch_dsl import Search, Q
 
 from settings import INDEX_NAME
 
@@ -32,10 +32,13 @@ def index_tutors(tutors, **bulk_kwargs):
 
 
 
-def find_tutors():
+def find_tutors(subject=None):
     """
 
     :return:
     """
-    res = get_search().execute()
+    query = get_search()
+    if subject:
+        query = query.filter(Q('term', subject=subject))
+    res = query.execute()
     return [tutor.id for tutor in res.hits]

@@ -18,7 +18,14 @@ def ensure_es_index():
                 settings.INDEX_NAME: {
                     "properties": {
                         "subject": {"type": "keyword"},
-                        "tag": {"type": "keyword"}
+                        "tag": {"type": "keyword"},
+                        "score": {
+                            "type": "nested",
+                            "properties": {
+                                "key": {"type": "keyword"},
+                                "value": {"type": "double"}
+                            }
+                        },
                     }
                 }
             }

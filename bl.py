@@ -33,7 +33,7 @@ def index_tutors(tutors, **bulk_kwargs):
 
 
 def find_tutors(subject=None, tags=None, tags_and=None, min_price=None, max_price=None,
-                exp_price=None):
+                exp_price=None, score=None):
     """
 
     :return:
@@ -67,6 +67,30 @@ def find_tutors(subject=None, tags=None, tags_and=None, min_price=None, max_pric
             score_mode='multiply',
             query=query
         )
-    search = search.query(query)
+    if score:
+        query = Q(
+        'bool',
+        should=[  # will summarise score from each query
+            Q(
+                'nested',
+                path='score',
+                query=Q(
+                    'function_score',
+                    functions=[dict(
+                        field_value_factor={
+                            "field": 'score.value',
+                            "missing": 0
+                        },
+                    )],
+                    boost_mode='replace',
+                    query=Q('term', **{'score.key': score})
+                )
+            ),
+            # to show ads without rating field, if rating indexing fail
+            Q(boost=0)
+        ]
+    )
+    search = search.query(query).extra(_source=False)
     res = search.execute()
-    return [tutor.id for tutor in res.hits]
+    # assert False, res.hits.hits
+    return [int(tutor.meta.id) for tutor in res.hits]

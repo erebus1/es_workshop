@@ -146,40 +146,71 @@ from bl import get_search, index_tutors, find_tutors
 #     assert set(res[2:]) == {1, 2}
 
 
+#
+# def test_range_tutors_by_tags_and_price():
+#     index_tutors([
+#         {
+#             'id': 1,
+#             'price': 9,
+#             'tag': 'ielts'
+#         },
+#         {
+#             'id': 2,
+#             'price': 9,
+#             'tag': 'toefl'
+#         },
+#         {
+#             'id': 3,
+#             'price': 17,
+#             'tag': ['toefl', 'ielts', 'daf']
+#         },
+#         {
+#             'id': 4,
+#             'price': 11,
+#             'tag': ['toefl', 'ielts', 'e', 't']
+#         },
+#         {
+#             'id': 5,
+#             'price': 9,
+#             'tag': ['other']
+#         }
+#     ], refresh=True)
 
-def test_range_tutors_by_tags_and_price():
+
+    # res = find_tutors(tags=['ielts', 'toefl', 'daf'], exp_price=12)
+    # assert res[0] == 4
+    # assert res[1] == 3
+    # assert len(res) == 4
+    # assert set(res[2:]) == {1, 2}s_by_tags_and_price():
+
+def test_nested_docs():
     index_tutors([
         {
             'id': 1,
-            'price': 9,
-            'tag': 'ielts'
-        },
-        {
+            'score': [
+                {
+                    'key': 'en',
+                    'value': 1,
+                },
+                {
+                    'key': 'ru',
+                    'value': 2,
+                },
+            ]
+        },{
             'id': 2,
-            'price': 9,
-            'tag': 'toefl'
+            'score': [
+                {
+                    'key': 'en',
+                    'value': 2,
+                },
+                {
+                    'key': 'ru',
+                    'value': 1,
+                },
+            ]
         },
-        {
-            'id': 3,
-            'price': 17,
-            'tag': ['toefl', 'ielts', 'daf']
-        },
-        {
-            'id': 4,
-            'price': 11,
-            'tag': ['toefl', 'ielts', 'e', 't']
-        },
-        {
-            'id': 5,
-            'price': 9,
-            'tag': ['other']
-        }
     ], refresh=True)
 
-
-    res = find_tutors(tags=['ielts', 'toefl', 'daf'], exp_price=12)
-    assert res[0] == 4
-    assert res[1] == 3
-    assert len(res) == 4
-    assert set(res[2:]) == {1, 2}
-
+    assert [2, 1] == find_tutors(score='en')
+    assert [1, 2] == find_tutors(score='ru')

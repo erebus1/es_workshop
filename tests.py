@@ -91,3 +91,25 @@ def test_find_tutors_by_list_of_tags_and_op():
 
 
     assert {3} == set(find_tutors(tags_and=['ielts', 'toefl']))
+
+
+
+def test_find_tutors_by_list_of_tags_and_op():
+    index_tutors([
+        {
+            'id': 1,
+            'price': 10
+        },
+        {
+            'id': 2,
+            'price': 16
+        },
+        {
+            'id': 3,
+            'price': 21
+        },
+    ], refresh=True)
+
+
+    assert {2} == set(find_tutors(min_price=11, max_price=18))
+

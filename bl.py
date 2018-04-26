@@ -32,7 +32,7 @@ def index_tutors(tutors, **bulk_kwargs):
 
 
 
-def find_tutors(subject=None, tags=None, tags_and=None):
+def find_tutors(subject=None, tags=None, tags_and=None, min_price=None, max_price=None):
     """
 
     :return:
@@ -44,6 +44,9 @@ def find_tutors(subject=None, tags=None, tags_and=None):
         query = query.filter(Q('terms', tag=tags))
     if tags_and:
         query = query.filter(Q('bool', filter=[Q('term', tag=tag) for tag in tags_and]))
-        assert False, query.to_dict()
+    if min_price:
+        query = query.filter(Q('range', price={'gte': min_price}))
+    if max_price:
+        query = query.filter(Q('range', price={'lte': max_price}))
     res = query.execute()
     return [tutor.id for tutor in res.hits]

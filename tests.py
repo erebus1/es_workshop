@@ -29,3 +29,17 @@ def test_find_tutors_by_subject():
     ], refresh=True)
 
     assert {1} == set(find_tutors(subject='english'))
+
+def test_find_tutors_by_complex_subject():
+    index_tutors([
+        {
+            'id': 1,
+            'subject': 'english lang'
+        },
+        {
+            'id': 2,
+            'subject': 'english new'
+        }
+    ], refresh=True)
+
+    assert {1} == set(find_tutors(subject='english lang'))

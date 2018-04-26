@@ -17,6 +17,7 @@ def ensure_es_index():
             "mappings": {
                 settings.INDEX_NAME: {
                     "properties": {
+                        "subject": {"type": "keyword"}
                     }
                 }
             }

@@ -41,7 +41,9 @@ def find_tutors(subject=None, tags=None, tags_and=None, min_price=None, max_pric
     if subject:
         query = query.filter(Q('term', subject=subject))
     if tags:
-        query = query.filter(Q('terms', tag=tags))
+        query = query.query(
+            Q('bool', should=[Q('term', tag=tag) for tag in tags])
+        )
     if tags_and:
         query = query.filter(Q('bool', filter=[Q('term', tag=tag) for tag in tags_and]))
     if min_price:

@@ -4,7 +4,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: python
+    command: ptw --runner "pytest tests.py"
     links:
      - elasticsearch
     depends_on:

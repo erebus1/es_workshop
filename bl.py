@@ -92,5 +92,4 @@ def find_tutors(subject=None, tags=None, tags_and=None, min_price=None, max_pric
     )
     search = search.query(query).extra(_source=False)
     res = search.execute()
-    # assert False, res.hits.hits
     return [int(tutor.meta.id) for tutor in res.hits]

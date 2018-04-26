@@ -32,23 +32,41 @@ def index_tutors(tutors, **bulk_kwargs):
 
 
 
-def find_tutors(subject=None, tags=None, tags_and=None, min_price=None, max_price=None):
+def find_tutors(subject=None, tags=None, tags_and=None, min_price=None, max_price=None,
+                exp_price=None):
     """
 
     :return:
     """
-    query = get_search()
+    search = get_search()
+    filters = []
+    must = []
     if subject:
-        query = query.filter(Q('term', subject=subject))
+        filters.append(Q('term', subject=subject))
     if tags:
-        query = query.query(
-            Q('bool', should=[Q('term', tag=tag) for tag in tags])
-        )
+        must += [Q('bool', should=[Q('term', tag=tag) for tag in tags])]
     if tags_and:
-        query = query.filter(Q('bool', filter=[Q('term', tag=tag) for tag in tags_and]))
+        filters.append(Q('bool', filter=[Q('term', tag=tag) for tag in tags_and]))
     if min_price:
-        query = query.filter(Q('range', price={'gte': min_price}))
+        filters.append(Q('range', price={'gte': min_price}))
     if max_price:
-        query = query.filter(Q('range', price={'lte': max_price}))
-    res = query.execute()
+        filters.append(Q('range', price={'lte': max_price}))
+    query = Q('bool', filter=filters, must=must)
+    if exp_price:
+        query = Q(
+            'function_score',
+            functions=[{"exp": {
+                "price": {
+                      "origin": exp_price,
+                      "scale": 2,
+                      "offset": 0,
+                      "decay" : 0.5
+                }
+            }}],
+            boost_mode='multiply',
+            score_mode='multiply',
+            query=query
+        )
+    search = search.query(query)
+    res = search.execute()
     return [tutor.id for tutor in res.hits]

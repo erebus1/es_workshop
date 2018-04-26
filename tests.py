@@ -114,34 +114,72 @@ from bl import get_search, index_tutors, find_tutors
 #     assert {2} == set(find_tutors(min_price=11, max_price=18))
 
 
-def test_range_tutors_by_tags():
+# def test_range_tutors_by_tags():
+#     index_tutors([
+#         {
+#             'id': 1,
+#             'tag': 'ielts'
+#         },
+#         {
+#             'id': 2,
+#             'tag': 'toefl'
+#         },
+#         {
+#             'id': 3,
+#             'tag': ['toefl', 'ielts', 'daf']
+#         },
+#         {
+#             'id': 4,
+#             'tag': ['toefl', 'ielts', 'e', 't']
+#         },
+#         {
+#             'id': 5,
+#             'tag': ['other']
+#         }
+#     ], refresh=True)
+#
+#
+#     res = find_tutors(tags=['ielts', 'toefl', 'daf'])
+#     assert res[0] == 3
+#     assert res[1] == 4
+#     assert len(res) == 4
+#     assert set(res[2:]) == {1, 2}
+
+
+
+def test_range_tutors_by_tags_and_price():
     index_tutors([
         {
             'id': 1,
+            'price': 9,
             'tag': 'ielts'
         },
         {
             'id': 2,
+            'price': 9,
             'tag': 'toefl'
         },
         {
             'id': 3,
+            'price': 17,
             'tag': ['toefl', 'ielts', 'daf']
         },
         {
             'id': 4,
+            'price': 11,
             'tag': ['toefl', 'ielts', 'e', 't']
         },
         {
             'id': 5,
+            'price': 9,
             'tag': ['other']
         }
     ], refresh=True)
 
 
-    res = find_tutors(tags=['ielts', 'toefl', 'daf'])
-    assert res[0] == 3
-    assert res[1] == 4
+    res = find_tutors(tags=['ielts', 'toefl', 'daf'], exp_price=12)
+    assert res[0] == 4
+    assert res[1] == 3
     assert len(res) == 4
     assert set(res[2:]) == {1, 2}
 

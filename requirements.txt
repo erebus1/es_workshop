@@ -1,0 +1,4 @@
+pytest
+pytest-watch
+elasticsearch==6.2.0
+elasticsearch-dsl==6.1.0

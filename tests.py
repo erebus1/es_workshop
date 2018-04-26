@@ -42,4 +42,28 @@ def test_find_tutors_by_complex_subject():
         }
     ], refresh=True)
 
+
     assert {1} == set(find_tutors(subject='english lang'))
+
+def test_find_tutors_by_list_of_tags():
+    index_tutors([
+        {
+            'id': 1,
+            'tag': 'ielts'
+        },
+        {
+            'id': 2,
+            'tag': 'toefl'
+        },
+        {
+            'id': 3,
+            'tag': ['toefl', 'ielts']
+        },
+        {
+            'id': 4,
+            'tag': 'asd'
+        }
+    ], refresh=True)
+
+
+    assert {1, 2, 3} == set(find_tutors(tags=['ielts', 'toefl']))

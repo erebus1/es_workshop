@@ -32,7 +32,7 @@ def index_tutors(tutors, **bulk_kwargs):
 
 
 
-def find_tutors(subject=None):
+def find_tutors(subject=None, tags=None):
     """
 
     :return:
@@ -40,5 +40,7 @@ def find_tutors(subject=None):
     query = get_search()
     if subject:
         query = query.filter(Q('term', subject=subject))
+    if tags:
+        query = query.filter(Q('terms', tag=tags))
     res = query.execute()
     return [tutor.id for tutor in res.hits]
